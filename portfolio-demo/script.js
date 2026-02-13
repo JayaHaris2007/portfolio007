@@ -99,45 +99,7 @@
 })();
 
 
-// --- Typing Animation Logic ---
-(() => {
-    const typingSpan = document.getElementById("typing-text");
-    if (!typingSpan) return;
 
-    const words = ["Jaya Haris", "Problem Solver", "Fast Learner"];
-    let text = "";
-    let isDeleting = false;
-    let loopNum = 0;
-    let typingSpeed = 150;
-
-    const handleType = () => {
-        const i = loopNum % words.length;
-        const fullText = words[i];
-
-        if (isDeleting) {
-            text = fullText.substring(0, text.length - 1);
-        } else {
-            text = fullText.substring(0, text.length + 1);
-        }
-
-        typingSpan.textContent = text;
-
-        typingSpeed = isDeleting ? 30 : 150;
-
-        if (!isDeleting && text === fullText) {
-            typingSpeed = 2000; // 2 seconds pause as per request
-            isDeleting = true;
-        } else if (isDeleting && text === "") {
-            isDeleting = false;
-            loopNum++;
-            typingSpeed = 150;
-        }
-
-        setTimeout(handleType, typingSpeed);
-    };
-
-    setTimeout(handleType, typingSpeed);
-})();
 
 
 // --- Navbar & Mobile Menu Logic ---
