@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import profilePhoto from "../assets/My Profile Photo.jpeg";
+import profilePhoto from "../assets/profile.png";
 
 const About = () => {
     return (
@@ -17,7 +17,7 @@ const About = () => {
                         About <span className="text-cyan-500">Me</span>
                     </h2>
 
-                    <div className="flex flex-col md:flex-row items-stretch gap-10">
+                    <div className="flex flex-col md:flex-row items-center gap-10">
                         <motion.div
                             initial={{ scale: 0.5, opacity: 0 }}
                             whileInView={{ scale: 1, opacity: 1 }}
@@ -25,12 +25,12 @@ const About = () => {
                             transition={{ duration: 0.5 }}
                             className="w-full md:w-1/4 flex-shrink-0"
                         >
-                            <div className="relative group h-full w-full">
+                            <div className="relative group w-full aspect-[3/4]">
                                 <div className="absolute -inset-1 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl blur opacity-30 group-hover:opacity-75 transition duration-200"></div>
                                 <img
                                     src={profilePhoto}
                                     alt="Profile"
-                                    className="relative w-full h-full md:h-full md:w-full rounded-2xl object-cover shadow-xl ring-2 ring-white dark:ring-gray-800"
+                                    className="relative w-full h-full rounded-2xl object-cover shadow-xl ring-2 ring-white dark:ring-gray-800"
                                 />
                             </div>
                         </motion.div>
