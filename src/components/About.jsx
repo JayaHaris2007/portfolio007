@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import profilePhoto from "../assets/profile.png";
 
 const About = () => {
@@ -10,18 +10,27 @@ const About = () => {
         setIsMobile(window.innerWidth < 768);
     }, []);
 
-    // 3D tilt tracking
+    // 3D tilt tracking with spring damping to prevent edge shaking
     const mouseX = useMotionValue(0.5);
     const mouseY = useMotionValue(0.5);
-    const rotateX = useTransform(mouseY, [0, 1], [8, -8]);
-    const rotateY = useTransform(mouseX, [0, 1], [-8, 8]);
+
+    const springConfig = { stiffness: 150, damping: 20, mass: 0.5 };
+    const smoothX = useSpring(mouseX, springConfig);
+    const smoothY = useSpring(mouseY, springConfig);
+
+    const rotateX = useTransform(smoothY, [0, 1], [5, -5]);
+    const rotateY = useTransform(smoothX, [0, 1], [-5, 5]);
 
     const handleMouse = (e) => {
         if (isMobile) return;
         const rect = cardRef.current?.getBoundingClientRect();
         if (!rect) return;
-        mouseX.set((e.clientX - rect.left) / rect.width);
-        mouseY.set((e.clientY - rect.top) / rect.height);
+
+        // Clamp values to 0.15–0.85 to prevent extreme tilt at edges
+        const rawX = (e.clientX - rect.left) / rect.width;
+        const rawY = (e.clientY - rect.top) / rect.height;
+        mouseX.set(Math.max(0.15, Math.min(0.85, rawX)));
+        mouseY.set(Math.max(0.15, Math.min(0.85, rawY)));
     };
 
     const handleLeave = () => {
