@@ -16,11 +16,11 @@ const skills = [
     { name: "Firebase", category: "backend" },
     { name: "PHP", category: "backend" },
     { name: "Python", category: "backend" },
-    { name: "REST APIs", category: "backend" },
+
     // Tools — mixed
     { name: "Git", category: "backend" },
     { name: "AI Tools", category: "frontend" },
-    { name: "Arduino/ESP32", category: "backend" },
+
 ];
 
 // Random float offsets for each tag so they drift independently

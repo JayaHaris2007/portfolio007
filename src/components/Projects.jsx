@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ExternalLink, Github } from "lucide-react";
 import aiThinkrImg from "../assets/aithinkr_preview.png";
 import foodOrderImg from "../assets/food_order_preview.png";
+import kageImg from "../assets/image.png";
 
 const projects = [
     {
@@ -10,9 +11,9 @@ const projects = [
         description:
             "A habit-tracking system designed for disciplined builders. Track streaks, analyze patterns, and build atomic habits with a gamified interface.",
         tech: ["React.js", "Node.js", "MongoDB", "Framer Motion"],
-        image: null, // No image yet — uses gradient placeholder
-        liveLink: "#",
-        codeLink: "#",
+        image: kageImg,
+        liveLink: "https://kage-40c41.web.app/",
+        codeLink: "https://github.com/JayaHaris2007/Kage",
         accent: "red",
     },
     {
@@ -53,8 +54,8 @@ const ProjectCard = ({ project, index }) => {
             whileHover={{ scale: 1.02 }}
             className={`group relative bg-transparent border ${borderClass} ${glowClass} transition-all duration-500 overflow-hidden`}
         >
-            {/* Shatter overlay on hover */}
-            <div className="absolute inset-0 bg-sv-bg/95 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 flex flex-col justify-center items-center p-8">
+            {/* Shatter overlay on hover — desktop only */}
+            <div className="absolute inset-0 bg-sv-bg/95 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 hidden md:flex flex-col justify-center items-center p-8">
                 <p className="font-mono text-[10px] text-sv-muted tracking-[0.3em] uppercase mb-4">
           // Technical Readout
                 </p>
@@ -114,9 +115,33 @@ const ProjectCard = ({ project, index }) => {
                 <h3 className={`text-xl font-bold font-heading mb-2 ${isRed ? "text-sv-red" : "text-sv-blue"}`}>
                     {project.title}
                 </h3>
-                <p className="text-sv-muted text-sm leading-relaxed">
+                <p className="text-sv-muted text-sm leading-relaxed mb-4">
                     {project.description}
                 </p>
+
+                {/* Mobile-visible links */}
+                <div className="flex gap-4 md:hidden pt-3 border-t border-white/10">
+                    {project.liveLink !== "#" && (
+                        <a
+                            href={project.liveLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`flex items-center gap-2 text-xs font-mono tracking-widest uppercase ${isRed ? "text-sv-red" : "text-sv-blue"}`}
+                        >
+                            <ExternalLink size={14} /> Live
+                        </a>
+                    )}
+                    {project.codeLink !== "#" && (
+                        <a
+                            href={project.codeLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-xs font-mono tracking-widest uppercase text-sv-muted"
+                        >
+                            <Github size={14} /> Code
+                        </a>
+                    )}
+                </div>
             </div>
         </motion.div>
     );
