@@ -1,132 +1,97 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-scroll";
-import { Menu, X, Sun, Moon } from "lucide-react"; // Added Sun and Moon icons
-import { motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
 
-    // Theme state
-    const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-
-    // Apply theme on load and change
     useEffect(() => {
-        if (theme === "dark") {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-        }
-        localStorage.setItem("theme", theme);
-    }, [theme]);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 50) {
-                setIsScrolled(true);
-            } else {
-                setIsScrolled(false);
-            }
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
+        const onScroll = () => setIsScrolled(window.scrollY > 50);
+        window.addEventListener("scroll", onScroll);
+        return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
-    const toggleTheme = () => {
-        setTheme(theme === "light" ? "dark" : "light");
-    };
-
-    const navLinks = [
+    const links = [
         { name: "About", to: "about" },
         { name: "Skills", to: "skills" },
         { name: "Projects", to: "projects" },
+        { name: "Services", to: "services" },
         { name: "Contact", to: "contact" },
     ];
 
-    const toggleMenu = () => setIsOpen(!isOpen);
-
     return (
-        <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-4xl">
-            <div className="bg-black/90 dark:bg-gray-900/90 backdrop-blur-md border border-white/10 dark:border-gray-700 rounded-full px-6 py-3 flex justify-between items-center shadow-2xl transition-all duration-300">
+        <nav
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled
+                ? "py-3 bg-sv-bg/80 backdrop-blur-xl border-b border-white/5"
+                : "py-5 bg-transparent"
+                }`}
+        >
+            <div className="container mx-auto px-6 max-w-6xl flex justify-between items-center">
                 {/* Logo */}
                 <Link
                     to="hero"
                     smooth={true}
                     duration={500}
-                    className="text-2xl font-bold cursor-pointer font-heading tracking-wide text-gray-200 dark:text-white"
+                    className="text-2xl font-black font-heading tracking-wider chromatic-sm group"
                 >
-                    Jaya<span className="text-cyan-500">Haris</span>
+                    <span className="text-sv-red">JAYA</span>
+                    <span className="text-sv-blue">HARIS</span>
                 </Link>
 
-                {/* Desktop Menu */}
-                <div className="hidden md:flex items-center space-x-8">
-                    {navLinks.map((link) => (
+                {/* Desktop Links */}
+                <div className="hidden md:flex items-center gap-10">
+                    {links.map((link) => (
                         <Link
                             key={link.name}
                             to={link.to}
                             smooth={true}
                             duration={500}
-                            className="text-gray-300 hover:text-white font-medium cursor-pointer transition-colors duration-300 text-sm tracking-wide"
+                            spy={true}
+                            className="relative text-sv-muted hover:text-white font-mono text-xs tracking-[0.25em] uppercase transition-colors duration-300 group py-2"
                         >
                             {link.name}
+                            <span className="absolute -bottom-0.5 left-0 w-0 h-[2px] bg-sv-red transition-all duration-300 group-hover:w-full shadow-[0_0_8px_rgba(255,0,60,0.6)]" />
                         </Link>
                     ))}
-
-                    {/* Theme Toggle Button */}
-                    <button
-                        onClick={toggleTheme}
-                        className="p-2 rounded-full hover:bg-white/10 transition-colors text-gray-300"
-                        aria-label="Toggle Dark Mode"
-                    >
-                        {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
-                    </button>
                 </div>
 
-
-
-                {/* Mobile Menu Button */}
-                <div className="md:hidden flex items-center space-x-4">
-                    <button
-                        onClick={toggleTheme}
-                        className="p-2 rounded-full hover:bg-white/10 transition-colors text-gray-300"
-                    >
-                        {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
-                    </button>
-                    <button
-                        className="text-gray-300 hover:text-white focus:outline-none"
-                        onClick={toggleMenu}
-                    >
-                        {isOpen ? <X size={24} /> : <Menu size={24} />}
-                    </button>
-                </div>
+                {/* Mobile Toggle */}
+                <button
+                    className="md:hidden text-white hover:text-sv-red transition-colors"
+                    onClick={() => setIsOpen(!isOpen)}
+                >
+                    {isOpen ? <X size={28} /> : <Menu size={28} />}
+                </button>
             </div>
 
-            {/* Mobile Menu Dropdown */}
-            {isOpen && (
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: -20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                    className="absolute top-20 left-0 w-full bg-black/90 dark:bg-gray-900/95 backdrop-blur-md rounded-2xl border border-white/10 dark:border-gray-700 shadow-2xl overflow-hidden"
-                >
-                    <div className="flex flex-col items-center py-8 space-y-6">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                to={link.to}
-                                smooth={true}
-                                duration={500}
-                                offset={-70}
-                                onClick={toggleMenu}
-                                className="text-gray-300 hover:text-white text-lg font-medium cursor-pointer transition-colors"
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
-                    </div>
-                </motion.div>
-            )}
+            {/* Mobile Menu */}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="absolute top-full left-0 w-full bg-sv-bg/95 backdrop-blur-xl border-b border-white/10 py-8"
+                    >
+                        <div className="flex flex-col items-center gap-6">
+                            {links.map((link) => (
+                                <Link
+                                    key={link.name}
+                                    to={link.to}
+                                    smooth={true}
+                                    duration={500}
+                                    onClick={() => setIsOpen(false)}
+                                    className="text-sv-muted hover:text-sv-red text-lg font-mono tracking-[0.3em] uppercase transition-colors glitch-hover"
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </nav>
     );
 };

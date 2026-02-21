@@ -1,82 +1,133 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef, useEffect, useState } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import { Link } from "react-scroll";
-import { TypeAnimation } from "react-type-animation";
+
+/* ── SVG Web Line ── */
+const WebLine = () => (
+    <svg
+        className="absolute top-0 right-16 md:right-32 w-[2px] h-40 z-0 opacity-40"
+        viewBox="0 0 2 160"
+        fill="none"
+    >
+        <motion.line
+            x1="1" y1="0" x2="1" y2="160"
+            stroke="#ff003c"
+            strokeWidth="2"
+            strokeDasharray="4 4"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 2, delay: 0.5 }}
+        />
+    </svg>
+);
 
 const Hero = () => {
+    /* Spring-based "pull" toward mouse */
+    const containerRef = useRef(null);
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+    const springX = useSpring(x, { damping: 40, stiffness: 100 });
+    const springY = useSpring(y, { damping: 40, stiffness: 100 });
+
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+    }, []);
+
+    const handleMouseMove = (e) => {
+        if (isMobile) return;
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (!rect) return;
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        x.set((e.clientX - cx) * 0.02);
+        y.set((e.clientY - cy) * 0.02);
+    };
+
+    const handleMouseLeave = () => { x.set(0); y.set(0); };
+
     return (
         <section
             id="hero"
-            className="relative flex items-center justify-center min-h-screen px-6 overflow-hidden pt-20"
+            className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden"
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
         >
-            {/* Static Background Glows for Ambience */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-                <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px]" />
-            </div>
+            <WebLine />
 
-            <div className="relative z-10 text-center max-w-4xl mx-auto">
+            <motion.div
+                ref={containerRef}
+                style={{ x: springX, y: springY }}
+                className="relative z-10 text-center max-w-5xl mx-auto"
+            >
+                {/* Floating main content */}
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="max-w-3xl"
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 >
-                    <h1 className="text-2xl md:text-4xl font-medium mb-6 leading-tight text-gray-900 dark:text-white">
-                        Hello, I'm <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-700 font-bold">
-                            <TypeAnimation
-                                sequence={[
-                                    "Jaya Haris",
-                                    2000,
-                                    "Problem Solver",
-                                    2000,
-                                    "Fast Learner",
-                                    2000
-                                ]}
-                                wrapper="span"
-                                speed={50}
-                                repeat={Infinity}
-                            />
-                        </span>
-                    </h1>
-                    <p className="text-gray-600 dark:text-gray-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-                        I build exceptional digital experiences that are fast, accessible,
-                        visually appealing, and responsive.
-                    </p>
+                    <motion.h1
+                        initial={{ opacity: 0, y: 60 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, delay: 0.2 }}
+                        className="text-4xl md:text-6xl lg:text-7xl font-black font-heading leading-[1.1] tracking-tight mb-6 chromatic uppercase"
+                    >
+                        Crafting Intelligent
+                        <br />
+                        Digital Experiences
+                        <br />
+                        <span className="text-sv-red text-glow-red">Full-Stack</span>{" "}
+                        <span className="text-sv-blue text-glow-blue">Developer</span>
+                    </motion.h1>
 
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <Link
-                            to="projects"
-                            smooth={true}
-                            duration={500}
-                            className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-cyan-500/30 transform hover:-translate-y-1 transition-all duration-300 cursor-pointer w-full sm:w-auto"
-                        >
-                            View My Work
-                        </Link>
+                    <motion.p
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.6 }}
+                        className="text-sv-muted text-lg md:text-xl max-w-2xl mx-auto mb-12 font-mono tracking-wide"
+                    >
+                        Building Fast, Scalable &amp; Intelligent Web Systems.
+                    </motion.p>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 1 }}
+                        className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+                    >
+                        {/* Defy Gravity — Red pulse CTA */}
                         <Link
                             to="contact"
                             smooth={true}
                             duration={500}
-                            className="px-8 py-3 border border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-lg backdrop-blur-sm transition-all duration-300 cursor-pointer w-full sm:w-auto"
+                            className="relative px-10 py-4 bg-sv-red text-white font-bold tracking-[0.2em] uppercase text-sm spider-pulse hover:scale-105 transition-transform duration-300"
                         >
-                            Contact Me
+                            Start a Project
                         </Link>
-                    </div>
-                </motion.div>
-            </div>
 
-            {/* Scroll Down Indicator */}
-            <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20 pointer-events-auto">
+                        {/* View Projects — Blue ghost CTA */}
+                        <Link
+                            to="projects"
+                            smooth={true}
+                            duration={500}
+                            className="relative px-10 py-4 border border-sv-blue text-sv-blue font-bold tracking-[0.2em] uppercase text-sm glitch-hover hover:bg-sv-blue/10 transition-all duration-300"
+                        >
+                            View Projects
+                        </Link>
+                    </motion.div>
+                </motion.div>
+            </motion.div>
+
+            {/* Scroll indicator */}
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20">
                 <motion.div
-                    animate={{ y: [0, 10, 0] }}
-                    transition={{ repeat: Infinity, duration: 2 }}
+                    animate={{ y: [0, 12, 0] }}
+                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                    className="flex flex-col items-center gap-2"
                 >
-                    <Link to="about" smooth={true} duration={500}>
-                        <div className="w-6 h-10 border-2 border-gray-500 dark:border-gray-400 rounded-full flex justify-center p-1 cursor-pointer hover:border-cyan-400 transition-colors">
-                            <div className="w-1 h-3 bg-cyan-400 rounded-full mt-1"></div>
-                        </div>
-                    </Link>
+                    <span className="text-sv-muted text-[10px] font-mono tracking-[0.4em] uppercase">
+                        Scroll
+                    </span>
+                    <div className="w-px h-10 bg-gradient-to-b from-sv-red to-transparent" />
                 </motion.div>
             </div>
         </section>
