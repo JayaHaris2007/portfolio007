@@ -14,15 +14,16 @@ const Footer = () => {
 
                 <div className="flex gap-6">
                     {[
-                        { icon: <Github size={18} />, href: "https://github.com/JayaHaris2007" },
-                        { icon: <Linkedin size={18} />, href: "https://www.linkedin.com/in/jaya-haris-b-748a9a320/" },
-                        { icon: <Mail size={18} />, href: "mailto:jayaharisb@gmail.com" },
+                        { icon: <Github size={18} />, href: "https://github.com/JayaHaris2007", label: "GitHub" },
+                        { icon: <Linkedin size={18} />, href: "https://www.linkedin.com/in/jaya-haris-b-748a9a320/", label: "LinkedIn" },
+                        { icon: <Mail size={18} />, href: "mailto:jayaharisb@gmail.com", label: "Email" },
                     ].map((link, i) => (
                         <a
                             key={i}
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
+                            aria-label={link.label}
                             className="text-sv-muted hover:text-sv-red hover:drop-shadow-[0_0_8px_rgba(255,0,60,0.8)] transition-all duration-300"
                         >
                             {link.icon}

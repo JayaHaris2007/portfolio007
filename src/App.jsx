@@ -192,15 +192,17 @@ function App() {
 
       {/* ── Content ── */}
       <Navbar />
-      <AnimatePresence>
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Services />
-        <WhyWorkWithMe />
-        <Contact />
-      </AnimatePresence>
+      <main>
+        <AnimatePresence>
+          <Hero />
+          <About />
+          <Skills />
+          <Projects />
+          <Services />
+          <WhyWorkWithMe />
+          <Contact />
+        </AnimatePresence>
+      </main>
       <Footer />
     </div>
   );
