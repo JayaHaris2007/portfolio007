@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { Link } from "react-scroll";
+import { Github, Linkedin, Mail } from "lucide-react";
 
 /* ── SVG Web Line ── */
 const WebLine = () => (
@@ -114,20 +115,54 @@ const Hero = () => {
                             View Projects
                         </Link>
                     </motion.div>
+
+                    {/* Social Links */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 1.2 }}
+                        className="flex justify-center gap-6 mt-10"
+                    >
+                        <a
+                            href="https://github.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sv-muted hover:text-white transition-colors duration-300 hover:scale-110 transform"
+                            aria-label="GitHub"
+                        >
+                            <Github className="w-6 h-6" />
+                        </a>
+                        <a
+                            href="https://linkedin.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sv-muted hover:text-sv-blue transition-colors duration-300 hover:scale-110 transform"
+                            aria-label="LinkedIn"
+                        >
+                            <Linkedin className="w-6 h-6" />
+                        </a>
+                        <a
+                            href="mailto:contact@example.com"
+                            className="text-sv-muted hover:text-sv-red transition-colors duration-300 hover:scale-110 transform"
+                            aria-label="Email"
+                        >
+                            <Mail className="w-6 h-6" />
+                        </a>
+                    </motion.div>
                 </motion.div>
             </motion.div>
 
-            {/* Scroll indicator */}
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20">
+            {/* Scroll indicator - Added hidden on highly compact screens or adjusted spacing */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-0 hidden sm:block">
                 <motion.div
-                    animate={{ y: [0, 12, 0] }}
+                    animate={{ y: [0, 8, 0] }}
                     transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                    className="flex flex-col items-center gap-2"
+                    className="flex flex-col items-center gap-2 opacity-50"
                 >
                     <span className="text-sv-muted text-[10px] font-mono tracking-[0.4em] uppercase">
                         Scroll
                     </span>
-                    <div className="w-px h-10 bg-gradient-to-b from-sv-red to-transparent" />
+                    <div className="w-px h-8 bg-gradient-to-b from-sv-red to-transparent" />
                 </motion.div>
             </div>
         </section>

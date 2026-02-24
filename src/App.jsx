@@ -9,6 +9,8 @@ import Services from "./components/Services";
 import WhyWorkWithMe from "./components/WhyWorkWithMe";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import LaunchScreen from "./components/LaunchScreen";
+import spiderImage from "./assets/rmzqat6p2jc31 copy.png";
 
 /* ═══════════════════════════════════════════
    PARTICLE SYSTEM — upward-drifting white dots
@@ -176,15 +178,87 @@ function ScrollProgress() {
 }
 
 /* ═══════════════════════════════════════════
+   SCROLLING SPIDER — follows scroll in background
+   ═══════════════════════════════════════════ */
+function ScrollingSpider() {
+  const { scrollYProgress } = useScroll();
+  const [isGlitching, setIsGlitching] = useState(false);
+
+  // Spider moves down and subtly rotates as user scrolls
+  const yPostion = useSpring(useMotionValue(0), { damping: 50, stiffness: 100 });
+  const rotation = useSpring(useMotionValue(0), { damping: 50, stiffness: 100 });
+
+  useEffect(() => {
+    let scrollTimeout;
+
+    return scrollYProgress.onChange((latest) => {
+      // Move from top to bottom of screen (in vh roughly), capped at 60vh to prevent dropping out of view
+      yPostion.set(latest * (window.innerHeight * 0.6));
+      // Slight sway
+      rotation.set(Math.sin(latest * Math.PI * 4) * 15);
+
+      // Trigger glitch whenever scrolling happens
+      setIsGlitching(true);
+
+      // Clear the glitch shortly after scrolling stops
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        setIsGlitching(false);
+      }, 150); // Glitch turns off 150ms after scroll stops
+    });
+  }, [scrollYProgress, yPostion, rotation]);
+
+  return (
+    <>
+      <svg className="hidden">
+        <defs>
+          <filter id="scroll-glitch">
+            <feOffset dx={Math.random() > 0.5 ? 6 : -6} dy={Math.random() > 0.5 ? 3 : -3} in="SourceGraphic" result="red-shift" />
+            <feOffset dx={Math.random() > 0.5 ? -6 : 6} dy={Math.random() > 0.5 ? -3 : 3} in="SourceGraphic" result="blue-shift" />
+            <feColorMatrix in="red-shift" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red" />
+            <feColorMatrix in="blue-shift" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue" />
+            <feBlend in="red" in2="blue" mode="screen" result="color-shift" />
+            <feBlend in="SourceGraphic" in2="color-shift" mode="screen" />
+          </filter>
+        </defs>
+      </svg>
+      <motion.div
+        className="fixed top-20 left-10 md:left-20 z-0 pointer-events-none opacity-20"
+        style={{
+          y: yPostion,
+          rotate: rotation,
+          filter: isGlitching ? 'url(#scroll-glitch)' : 'none',
+          scale: isGlitching ? 1.05 : 1
+        }}
+      >
+        <img
+          src={spiderImage}
+          alt="Background Spider"
+          className="w-32 h-32 md:w-48 md:h-48 object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+        />
+        {/* Thread connecting to top */}
+        <div className="absolute bottom-full left-1/2 -translateX-1/2 w-[1px] h-[100vh] bg-white opacity-40 shadow-[0_0_5px_white]" />
+      </motion.div>
+    </>
+  );
+}
+
+/* ═══════════════════════════════════════════
    MAIN APP
    ═══════════════════════════════════════════ */
 function App() {
+  const [showLaunch, setShowLaunch] = useState(true);
 
   return (
     <div className="relative min-h-screen text-sv-text overflow-x-hidden font-sans bg-sv-bg">
+      <AnimatePresence mode="wait">
+        {showLaunch && <LaunchScreen onComplete={() => setShowLaunch(false)} />}
+      </AnimatePresence>
+
       {/* ── Background Layers ── */}
       <ParticleCanvas />
       <div className="halftone-overlay" />
+      <ScrollingSpider />
 
       {/* ── Global Effects ── */}
       <CustomCursor />
